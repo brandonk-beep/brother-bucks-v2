@@ -1,1 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brother Bucks - Mover Portal</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #563092 0%, #452377 100%);
+      color: #333;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    header h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 16px;
+      opacity: 0.9;
+    }
+
+    .login-box {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      max-width: 400px;
+      margin: 60px auto;
+    }
+
+    .login-box h2 {
+      margin-bottom: 30px;
+      color: #333;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #563092;
+      box-shadow: 0 0 0 3px rgba(86, 48, 146, 0.1);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 12px;
+      background: #563092;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .login-btn:hover {
+      background: #452377;
+    }
+
+    .error-message {
+      background: #fee;
+      border: 1px solid #fcc;
+      color: #c00;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    /* Dashboard */
+    .dashboard {
+      display: none;
+    }
+
+    .header-bar {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-bar h2 {
+      color: #333;
+    }
+
+    .logout-btn {
+      background: #ef4444;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .logout-btn:hover {
+      background: #dc2626;
+    }
+
+    .scorecard {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+
+    .score-display {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .score-box {
+      background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      border: 2px solid #e0e0e0;
+    }
+
+    .score-box.highlight {
+      background: linear-gradient(135deg, #563092 0%, #452377 100%);
+      color: white;
+      border-color: #563092;
+    }
+
+    .score-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.8;
+      margin-bottom: 8px;
+    }
+
+    .score-value {
+      font-size: 32px;
+      font-weight: 700;
+    }
+
+    .score-box.highlight .score-label {
+      font-size: 14px;
+    }
+
+    .score-box.highlight .score-value {
+      font-size: 48px;
+    }
+
+    .bonus-info {
+      background: #f0f7ff;
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 4px solid #563092;
+      margin-top: 20px;
+    }
+
+    .bonus-info h3 {
+      color: #563092;
+      margin-bottom: 10px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      border-bottom: 2px solid #eee;
+      margin-bottom: 20px;
+    }
+
+    .tabs button {
+      padding: 12px 20px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-weight: 500;
+      color: #666;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .tabs button.active {
+      color: #563092;
+      border-bottom-color: #563092;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .detail-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .detail-item {
+      padding: 15px;
+      background: #f9f9f9;
+      border-radius: 6px;
+      border-left: 4px solid #563092;
+    }
+
+    .detail-item strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #333;
+    }
+
+    .detail-item small {
+      color: #666;
+    }
+
+    .detail-item p {
+      margin-top: 8px;
+      color: #555;
+      font-size: 13px;
+    }
+
+    .challenge-form {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .challenge-form h3 {
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .challenge-form select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #563092;
+      box-shadow: 0 0 0 3px rgba(86, 48, 146, 0.1);
+    }
+
+    .submit-btn {
+      background: #563092;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 15px;
+    }
+
+    .submit-btn:hover {
+      background: #452377;
+    }
+
+    .leaderboard {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table thead {
+      background: #f9f9f9;
+      border-bottom: 2px solid #eee;
+    }
+
+    table th {
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #333;
+    }
+
+    table td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    table tr:hover {
+      background: #f9f9f9;
+    }
+
+    .you-row {
+      background: #f0f7ff;
+      font-weight: 600;
+    }
+
+    .rank {
+      background: #563092;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .estimated-banner {
+      background: #fffacd;
+      border: 1px solid #f4d03f;
+      color: #856404;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-approved {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status-rejected {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    @media (max-width: 768px) {
+      .score-display {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .header-bar {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+      }
+
+      table {
+        font-size: 12px;
+      }
+
+      table th, table td {
+        padding: 8px;
+      }
+
+      .tabs {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Login Section -->
+    <div id="loginSection">
+      <header>
+        <h1>Brother Bucks v2.0</h1>
+        <p>Mover Performance Bonus Tracker</p>
+      </header>
+
+      <div class="login-box">
+        <h2>Login</h2>
+        <div id="errorMessage" class="error-message"></div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="email" placeholder="your@email.com" autofocus>
+        </div>
+        <div class="form-group">
+          <label>Passcode</label>
+          <input type="password" id="passcode" placeholder="••••••">
+        </div>
+        <button class="login-btn" onclick="login()">Login</button>
+        <p style="text-align: center; margin-top: 20px; font-size: 12px; color: #666;">
+          Contact your manager for login credentials
+        </p>
+      </div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="dashboardSection" class="dashboard">
+      <div class="header-bar">
+        <div>
+          <h2 id="welcomeMessage"></h2>
+          <small id="monthDisplay" style="color: #666;"></small>
+        </div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+
+      <!-- Scorecard -->
+      <div class="scorecard">
+        <div class="estimated-banner">
+          ⚠️ This is estimated only - scores update in real-time as admin enters data
+        </div>
+
+        <div class="score-display">
+          <div class="score-box">
+            <div class="score-label">Raving Fans</div>
+            <div class="score-value" id="ravingFansScore">-</div>
+            <small id="conversionRate" style="font-size: 11px;"></small>
+          </div>
+          <div class="score-box">
+            <div class="score-label">Damage Cost</div>
+            <div class="score-value" id="damageScore">-</div>
+            <small id="damagePerHour" style="font-size: 11px;"></small>
+          </div>
+          <div class="score-box">
+            <div class="score-label">Attendance</div>
+            <div class="score-value" id="attendanceScore">-</div>
+            <small id="attendancePoints" style="font-size: 11px;"></small>
+          </div>
+          <div class="score-box highlight">
+            <div class="score-label">Overall Score</div>
+            <div class="score-value" id="overallScore">-</div>
+            <small id="monthLabel" style="font-size: 11px;">This Month</small>
+          </div>
+        </div>
+
+        <div class="bonus-info">
+          <h3>💰 Monthly Bonus</h3>
+          <div style="font-size: 24px; font-weight: 700; color: #563092; margin-bottom: 8px;">
+            $<span id="monthlyBonus">0.00</span>
+          </div>
+          <small style="color: #666;">Hourly rate: $<span id="hourlyRate">0.00</span>/hr × <span id="totalHours">0</span> hours</small>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="scorecard">
+        <div class="tabs">
+          <button class="active" onclick="switchDashboardTab('leaderboard')">Leaderboard</button>
+          <button onclick="switchDashboardTab('reviews')">Reviews</button>
+          <button onclick="switchDashboardTab('damages')">Damages</button>
+          <button onclick="switchDashboardTab('attendance')">Attendance</button>
+          <button onclick="switchDashboardTab('challenges')">Challenges</button>
+        </div>
+
+        <!-- Leaderboard Tab -->
+        <div id="leaderboard" class="tab-content active">
+          <div class="leaderboard">
+            <table id="leaderboardTable">
+              <thead>
+                <tr>
+                  <th style="width: 50px;">Rank</th>
+                  <th>Mover Name</th>
+                  <th style="text-align: right;">Score</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboardBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Reviews Tab -->
+        <div id="reviews" class="tab-content">
+          <div id="reviewsList" class="detail-list"></div>
+        </div>
+
+        <!-- Damages Tab -->
+        <div id="damages" class="tab-content">
+          <div id="damagesList" class="detail-list"></div>
+        </div>
+
+        <!-- Attendance Tab -->
+        <div id="attendance" class="tab-content">
+          <div id="attendanceList" class="detail-list"></div>
+        </div>
+
+        <!-- Challenges Tab -->
+        <div id="challenges" class="tab-content">
+          <div class="challenge-form">
+            <h3>Submit a Challenge</h3>
+            <p style="color: #666; font-size: 13px; margin-bottom: 15px;">
+              If you disagree with a review rating, damage charge, or attendance mark, you can submit a challenge with an explanation.
+            </p>
+            <div class="form-group">
+              <label>Incident Type</label>
+              <select id="challengeType">
+                <option value="">Select type...</option>
+                <option value="review">Review Rating</option>
+                <option value="damage">Damage Cost</option>
+                <option value="attendance">Attendance Mark</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Challenge Description</label>
+              <textarea id="challengeText" placeholder="Explain why you disagree with this incident..."></textarea>
+            </div>
+            <button class="submit-btn" onclick="submitChallenge()">Submit Challenge</button>
+          </div>
+
+          <h3 style="margin-top: 30px; margin-bottom: 20px;">Your Challenges</h3>
+          <div id="challengesList" class="detail-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = '/api';
+    let currentMoverId = null;
+    let currentMonth = null;
+
+    function getCurrentMonth() {
+      const now = new Date();
+      return now.toISOString().slice(0, 7);
+    }
+
+    function login() {
+      const email = document.getElementById('email').value;
+      const passcode = document.getElementById('passcode').value;
+
+      if (!email || !passcode) {
+        showLoginError('Email and passcode are required');
+        return;
+      }
+
+      fetch(`${API_BASE}/mover/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, passcode }),
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.success) {
+            currentMoverId = data.moverId;
+            currentMonth = getCurrentMonth();
+            showDashboard(data.name);
+            loadScore();
+            loadLeaderboard();
+            loadDetails();
+          } else {
+            showLoginError(data.error || 'Login failed');
+          }
+        })
+        .catch(err => showLoginError(err.message));
+    }
+
+    function logout() {
+      fetch(`${API_BASE}/mover/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      }).then(() => {
+        document.getElementById('loginSection').style.display = 'block';
+        document.getElementById('dashboardSection').style.display = 'none';
+        document.getElementById('email').value = '';
+        document.getElementById('passcode').value = '';
+      });
+    }
+
+    function showDashboard(name) {
+      document.getElementById('loginSection').style.display = 'none';
+      document.getElementById('dashboardSection').style.display = 'block';
+      document.getElementById('welcomeMessage').textContent = `Welcome, ${name}`;
+      const monthDate = new Date(currentMonth);
+      document.getElementById('monthDisplay').textContent = monthDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    }
+
+    function showLoginError(msg) {
+      const err = document.getElementById('errorMessage');
+      err.textContent = msg;
+      err.style.display = 'block';
+      setTimeout(() => { err.style.display = 'none'; }, 5000);
+    }
+
+    function loadScore() {
+      fetch(`${API_BASE}/scoring/score/${currentMoverId}/${currentMonth}`, { credentials: 'include' })
+        .then(r => r.json())
+        .then(data => {
+          if (data.error) {
+            document.getElementById('ravingFansScore').textContent = '0';
+            document.getElementById('damageScore').textContent = '0';
+            document.getElementById('attendanceScore').textContent = '0';
+            document.getElementById('overallScore').textContent = '0';
+            return;
+          }
+          document.getElementById('ravingFansScore').textContent = Math.round(data.raving_fans_score * 10) / 10;
+          document.getElementById('conversionRate').textContent = `${Math.round(data.conversion_rate)}% conversion`;
+          document.getElementById('damageScore').textContent = Math.round(data.damage_score * 10) / 10;
+          document.getElementById('damagePerHour').textContent = `$${data.damage_per_hour.toFixed(2)}/hr`;
+          document.getElementById('attendanceScore').textContent = Math.round(data.attendance_score * 10) / 10;
+          document.getElementById('attendancePoints').textContent = `${data.total_attendance_points} points`;
+          document.getElementById('overallScore').textContent = Math.round(data.overall_score * 10) / 10;
+          document.getElementById('hourlyRate').textContent = data.hourly_rate.toFixed(2);
+          document.getElementById('monthlyBonus').textContent = data.monthly_bonus.toFixed(2);
+          document.getElementById('totalHours').textContent = data.total_hours;
+        })
+        .catch(err => console.error('Score load error:', err));
+    }
+
+    function loadLeaderboard() {
+      fetch(`${API_BASE}/mover/leaderboard/${currentMonth}`, { credentials: 'include' })
+        .then(r => r.json())
+        .then(data => {
+          const tbody = document.getElementById('leaderboardBody');
+          tbody.innerHTML = data.map((mover, idx) => `
+            <tr ${mover.mover_id === currentMoverId ? 'class="you-row"' : ''}>
+              <td><div class="rank">${mover.rank}</div></td>
+              <td>${mover.name}${mover.mover_id === currentMoverId ? ' (You)' : ''}</td>
+              <td style="text-align: right; font-weight: 600;">${Math.round(mover.overall_score * 10) / 10}</td>
+            </tr>
+          `).join('');
+        })
+        .catch(err => console.error('Leaderboard load error:', err));
+    }
+
+    function loadDetails() {
+      loadReviews();
+      loadDamages();
+      loadAttendance();
+      loadChallenges();
+    }
+
+    function loadReviews() {
+      fetch(`${API_BASE}/mover/reviews/${currentMonth}`, { credentials: 'include' })
+        .then(r => r.json())
+        .then(data => {
+          const list = document.getElementById('reviewsList');
+          if (data.reviews.length === 0) {
+            list.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">No reviews yet</div>';
+            return;
+          }
+          list.innerHTML = data.reviews.map(r => `
+            <div class="detail-item">
+              <strong>⭐ ${r.rating}-Star Review (${r.source})</strong>
+              <small>${new Date(r.date_of_review).toLocaleDateString()}</small>
+              ${r.feedback_text ? `<p>"${r.feedback_text}"</p>` : ''}
+            </div>
+          `).join('');
+        });
+    }
+
+    function loadDamages() {
+      fetch(`${API_BASE}/mover/damages/${currentMonth}`, { credentials: 'include' })
+        .then(r => r.json())
+        .then(data => {
+          const list = document.getElementById('damagesList');
+          if (data.damages.length === 0) {
+            list.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">No damages logged</div>';
+            return;
+          }
+          list.innerHTML = data.damages.map(d => `
+            <div class="detail-item">
+              <strong>Job ${d.job_number} - $${d.cost_per_mover.toFixed(2)}</strong>
+              <small>Closed: ${new Date(d.date_closed).toLocaleDateString()} | Status: ${d.status}</small>
+              ${d.claim_notes ? `<p>${d.claim_notes}</p>` : ''}
+            </div>
+          `).join('');
+        });
+    }
+
+    function loadAttendance() {
+      fetch(`${API_BASE}/mover/attendance/${currentMonth}`, { credentials: 'include' })
+        .then(r => r.json())
+        .then(data => {
+          const list = document.getElementById('attendanceList');
+          if (data.attendance.length === 0) {
+            list.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">Perfect attendance!</div>';
+            return;
+          }
+          list.innerHTML = data.attendance.map(a => `
+            <div class="detail-item">
+              <strong>${a.type} (${a.points} pts)</strong>
+              <small>${new Date(a.date_incident).toLocaleDateString()}</small>
+              ${a.notes ? `<p>${a.notes}</p>` : ''}
+            </div>
+          `).join('');
+        });
+    }
+
+    function loadChallenges() {
+      fetch(`${API_BASE}/mover/challenges/${currentMonth}`, { credentials: 'include' })
+        .then(r => r.json())
+        .then(data => {
+          const list = document.getElementById('challengesList');
+          if (data.challenges.length === 0) {
+            list.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">No challenges submitted</div>';
+            return;
+          }
+          list.innerHTML = data.challenges.map(c => {
+            const statusClass = `status-${c.status}`;
+            const statusText = c.status.charAt(0).toUpperCase() + c.status.slice(1);
+            return `
+            <div class="detail-item">
+              <strong>${c.incident_type.toUpperCase()}</strong>
+              <span class="status-badge ${statusClass}">${statusText}</span>
+              <small style="display: block; margin-top: 4px;">Submitted: ${new Date(c.created_at).toLocaleDateString()}</small>
+              <p>"${c.challenge_text}"</p>
+              ${c.admin_response ? `<p style="padding: 8px; background: #e8f5e9; border-radius: 4px; color: #2e7d32;"><strong>Admin Response:</strong> ${c.admin_response}</p>` : ''}
+            </div>
+          `}).join('');
+        });
+    }
+
+    function submitChallenge() {
+      const type = document.getElementById('challengeType').value;
+      const text = document.getElementById('challengeText').value;
+
+      if (!type || !text) {
+        alert('Please fill all fields');
+        return;
+      }
+
+      fetch(`${API_BASE}/mover/challenge`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ incidentType: type, incidentId: 0, challengeText: text }),
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.success) {
+            alert('Challenge submitted! Admin will review it soon.');
+            document.getElementById('challengeType').value = '';
+            document.getElementById('challengeText').value = '';
+            loadChallenges();
+          } else {
+            alert(data.error);
+          }
+        });
+    }
+
+    function switchDashboardTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tabs button').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    setInterval(() => {
+      if (currentMoverId) {
+        loadScore();
+        loadLeaderboard();
+      }
+    }, 30000);
+  </script>
+</body>
+</html>
