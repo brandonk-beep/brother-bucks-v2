@@ -1,1 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brother Bucks - Admin Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    .login-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #563092 0%, #452377 100%);
+    }
+
+    .login-box {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      max-width: 400px;
+      width: 90%;
+    }
+
+    .login-box h1 {
+      color: #563092;
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+
+    .login-box p {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #563092;
+      box-shadow: 0 0 0 3px rgba(86, 48, 146, 0.1);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 12px;
+      background: #563092;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .login-btn:hover {
+      background: #452377;
+    }
+
+    .error {
+      background: #fee;
+      border: 1px solid #fcc;
+      color: #c00;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .dashboard {
+      display: none;
+    }
+
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 250px;
+      height: 100vh;
+      background: #563092;
+      color: white;
+      padding: 20px 0;
+      overflow-y: auto;
+      z-index: 1000;
+    }
+
+    .sidebar h2 {
+      padding: 0 20px;
+      margin-bottom: 30px;
+      font-size: 18px;
+    }
+
+    .sidebar button {
+      width: 100%;
+      padding: 12px 20px;
+      border: none;
+      background: none;
+      color: white;
+      text-align: left;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+
+    .sidebar button:hover,
+    .sidebar button.active {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .main-content {
+      margin-left: 250px;
+      padding: 20px;
+    }
+
+    .header {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .logout-btn {
+      background: #ef4444;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .logout-btn:hover {
+      background: #dc2626;
+    }
+
+    .tab {
+      display: none;
+    }
+
+    .tab.active {
+      display: block;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .card h3 {
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .form-row.full {
+      grid-template-columns: 1fr;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      margin-bottom: 5px;
+      font-weight: 600;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 13px;
+      font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #563092;
+      box-shadow: 0 0 0 3px rgba(86, 48, 146, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .btn-primary {
+      background: #563092;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #452377;
+    }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #333;
+    }
+
+    .btn-secondary:hover {
+      background: #d1d5db;
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .btn-success {
+      background: #10b981;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #059669;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    table thead {
+      background: #f9f9f9;
+      border-bottom: 2px solid #ddd;
+    }
+
+    table th {
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #eee;
+      font-size: 13px;
+    }
+
+    table tr:hover {
+      background: #f9f9f9;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-approved {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status-rejected {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .status-closed {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .success-message {
+      background: #dcfce7;
+      border: 1px solid #86efac;
+      color: #166534;
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .error-message {
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 5px;
+    }
+
+    .action-buttons button {
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 200px;
+      }
+
+      .main-content {
+        margin-left: 200px;
+        padding: 10px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Section -->
+  <div id="loginSection" class="login-container">
+    <div class="login-box">
+      <h1>Admin Dashboard</h1>
+      <p>Brother Bucks v2.0 Management</p>
+      <div class="error" id="loginError"></div>
+      <div class="form-group">
+        <label>Admin Password</label>
+        <input type="password" id="adminPassword" placeholder="Enter password" autofocus>
+      </div>
+      <button class="login-btn" onclick="adminLogin()">Login</button>
+    </div>
+  </div>
+
+  <!-- Dashboard Section -->
+  <div id="dashboardSection" class="dashboard">
+    <div class="sidebar">
+      <h2>Brother Bucks</h2>
+      <button class="tab-btn active" onclick="switchTab('movers')">Movers</button>
+      <button class="tab-btn" onclick="switchTab('csvupload')">CSV Upload</button>
+      <button class="tab-btn" onclick="switchTab('damages')">Damages</button>
+      <button class="tab-btn" onclick="switchTab('reviews')">Reviews</button>
+      <button class="tab-btn" onclick="switchTab('attendance')">Attendance</button>
+      <button class="tab-btn" onclick="switchTab('challenges')">Challenges</button>
+      <button class="tab-btn" onclick="adminLogout()" style="position: absolute; bottom: 20px; background: #ef4444;">Logout</button>
+    </div>
+
+    <div class="main-content">
+      <div class="header">
+        <h1>Admin Dashboard</h1>
+      </div>
+
+      <!-- Movers Tab -->
+      <div id="movers" class="tab active">
+        <div class="card">
+          <h3>Add New Mover</h3>
+          <div class="success-message" id="moverSuccess"></div>
+          <div class="error-message" id="moverError"></div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Mover Name</label>
+              <input type="text" id="moverName" placeholder="Full name">
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="moverEmail" placeholder="email@example.com">
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="addMover()">Add Mover</button>
+        </div>
+
+        <div class="card">
+          <h3>Active Movers</h3>
+          <table id="moversTable">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="moversBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CSV Upload Tab -->
+      <div id="csvupload" class="tab">
+        <div class="card">
+          <h3>Upload SmartMoving CSV</h3>
+          <p style="margin-bottom: 15px; font-size: 13px; color: #666;">
+            Expected columns: Job Number, Job Rating, Job Date, Customer Name, Customer Email, Actual Time Hours, Crew Member Names
+          </p>
+          <div class="success-message" id="csvSuccess"></div>
+          <div class="error-message" id="csvError"></div>
+          <div class="form-group full">
+            <label>Paste CSV Content</label>
+            <textarea id="csvContent" placeholder="Paste SmartMoving CSV here..."></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="uploadCSV()">Process CSV</button>
+        </div>
+      </div>
+
+      <!-- Damages Tab -->
+      <div id="damages" class="tab">
+        <div class="card">
+          <h3>Log Damage Claim</h3>
+          <div class="success-message" id="damageSuccess"></div>
+          <div class="error-message" id="damageError"></div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Mover</label>
+              <select id="damageMover">
+                <option value="">Select mover...</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Cost per Mover ($)</label>
+              <input type="number" id="damageCost" placeholder="0.00" step="0.01">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Job Number</label>
+              <input type="text" id="damageJobNumber" placeholder="Job #">
+            </div>
+            <div class="form-group">
+              <label>Date Closed</label>
+              <input type="date" id="damageDateClosed">
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="form-group">
+              <label>Notes</label>
+              <textarea id="damageNotes" placeholder="Incident details..."></textarea>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="logDamage()">Log Damage</button>
+        </div>
+      </div>
+
+      <!-- Reviews Tab -->
+      <div id="reviews" class="tab">
+        <div class="card">
+          <h3>Log Manual Review</h3>
+          <div class="success-message" id="reviewSuccess"></div>
+          <div class="error-message" id="reviewError"></div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Mover</label>
+              <select id="reviewMover">
+                <option value="">Select mover...</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Rating</label>
+              <select id="reviewRating">
+                <option value="">Select rating...</option>
+                <option value="5">⭐⭐⭐⭐⭐ (5 stars)</option>
+                <option value="4">⭐⭐⭐⭐ (4 stars)</option>
+                <option value="3">⭐⭐⭐ (3 stars)</option>
+                <option value="2">⭐⭐ (2 stars)</option>
+                <option value="1">⭐ (1 star)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Source</label>
+              <select id="reviewSource">
+                <option value="Google">Google</option>
+                <option value="Yelp">Yelp</option>
+                <option value="Internal">Internal</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" id="reviewDate">
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="form-group">
+              <label>Feedback</label>
+              <textarea id="reviewFeedback" placeholder="Customer feedback..."></textarea>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="logReview()">Log Review</button>
+        </div>
+      </div>
+
+      <!-- Attendance Tab -->
+      <div id="attendance" class="tab">
+        <div class="card">
+          <h3>Log Attendance Mark</h3>
+          <div class="success-message" id="attendanceSuccess"></div>
+          <div class="error-message" id="attendanceError"></div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Mover</label>
+              <select id="attendanceMover">
+                <option value="">Select mover...</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Incident Type</label>
+              <select id="attendanceType" onchange="updateAttendancePoints()">
+                <option value="">Select type...</option>
+                <option value="Late 5-9 min">Late 5-9 min (0.5 pts)</option>
+                <option value="Late 10-15 min">Late 10-15 min (1.0 pts)</option>
+                <option value="Late 16+ min">Late 16+ min (1.5 pts)</option>
+                <option value="Call out (EOB prior)">Call out before EOB (1 pts)</option>
+                <option value="Call out (day of)">Call out day of (2 pts)</option>
+                <option value="No Call No Show">No Call No Show (3 pts)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Points</label>
+              <input type="number" id="attendancePoints" placeholder="Auto-filled" step="0.5" readonly>
+            </div>
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" id="attendanceDate">
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="form-group">
+              <label>Notes</label>
+              <textarea id="attendanceNotes" placeholder="Additional details..."></textarea>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="logAttendance()">Log Attendance</button>
+        </div>
+      </div>
+
+      <!-- Challenges Tab -->
+      <div id="challenges" class="tab">
+        <div class="card">
+          <h3>Pending Challenges</h3>
+          <table id="challengesTable">
+            <thead>
+              <tr>
+                <th>Mover</th>
+                <th>Type</th>
+                <th>Challenge</th>
+                <th>Submitted</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="challengesBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = '/api';
+    let moversCache = [];
+
+    function adminLogin() {
+      const password = document.getElementById('adminPassword').value;
+      fetch(`${API_BASE}/admin/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ password }),
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.success) {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('dashboardSection').style.display = 'block';
+            loadMovers();
+            loadChallenges();
+          } else {
+            showError('loginError', data.error || 'Login failed');
+          }
+        });
+    }
+
+    function adminLogout() {
+      fetch(`${API_BASE}/admin/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      }).then(() => {
+        document.getElementById('loginSection').style.display = 'flex';
+        document.getElementById('dashboardSection').style.display = 'none';
+        document.getElementById('adminPassword').value = '';
+      });
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    function loadMovers() {
+      fetch(`${API_BASE}/admin/movers`, { credentials: 'include' })
+        .then(r => r.json())
+        .then(data => {
+          moversCache = data;
+          const tbody = document.getElementById('moversBody');
+          tbody.innerHTML = data.map(m => `
+            <tr>
+              <td>${m.name}</td>
+              <td>${m.email || 'N/A'}</td>
+              <td><span class="status-badge" style="background: #dbeafe; color: #1e40af;">${m.status}</span></td>
+            </tr>
+          `).join('');
+
+          // Update select dropdowns
+          const selects = ['damageMover', 'reviewMover', 'attendanceMover'];
+          selects.forEach(selectId => {
+            const select = document.getElementById(selectId);
+            const currentValue = select.value;
+            select.innerHTML = '<option value="">Select mover...</option>' +
+              data.map(m => `<option value="${m.mover_id}">${m.name}</option>`).join('');
+            select.value = currentValue;
+          });
+        });
+    }
+
+    function addMover() {
+      const name = document.getElementById('moverName').value;
+      const email = document.getElementById('moverEmail').value;
+
+      if (!name) {
+        showError('moverError', 'Mover name is required');
+        return;
+      }
+
+      fetch(`${API_BASE}/admin/mover`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ name, email }),
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.success) {
+            showSuccess('moverSuccess', 'Mover added successfully');
+            document.getElementById('moverName').value = '';
+            document.getElementById('moverEmail').value = '';
+            loadMovers();
+          } else {
+            showError('moverError', data.error);
+          }
+        });
+    }
+
+    function uploadCSV() {
+      const csvContent = document.getElementById('csvContent').value;
+      if (!csvContent) {
+        showError('csvError', 'Please paste CSV content');
+        return;
+      }
+
+      fetch(`${API_BASE}/admin/upload-csv`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ csvContent }),
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.success) {
+            showSuccess('csvSuccess', `Processed ${data.jobsProcessed} jobs`);
+            document.getElementById('csvContent').value = '';
+          } else {
+            showError('csvError', data.error);
+          }
+        });
+    }
+
+    function logDamage() {
+      const moverId = document.getElementById('damageMover').value;
+      const cost = document.getElementById('damageCost').value;
+      const jobNumber = document.getElementById('damageJobNumber').value;
+      const dateClosed = document.getElementById('damageDateClosed').value;
+      const notes = document.getElementById('damageNotes').value;
+
+      if (!moverId || !cost || !dateClosed) {
+        showError('damageError', 'Mover, cost, and date are required');
+        return;
+      }
+
+      fetch(`${API_BASE}/admin/damage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ moverId, cost, jobNumber, dateClosedInput: dateClosed, status: 'closed', notes }),
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.success) {
+            showSuccess('damageSuccess', 'Damage logged');
+            document.getElementById('damageMover').value = '';
+            document.getElementById('damageCost').value = '';
+            document.getElementById('damageJobNumber').value = '';
+            document.getElementById('damageDateClosed').value = '';
+            document.getElementById('damageNotes').value = '';
+          } else {
+            showError('damageError', data.error);
+          }
+        });
+    }
+
+    function logReview() {
+      const moverId = document.getElementById('reviewMover').value;
+      const rating = document.getElementById('reviewRating').value;
+      const source = document.getElementById('reviewSource').value;
+      const dateOfReview = document.getElementById('reviewDate').value;
+      const feedback = document.getElementById('reviewFeedback').value;
+
+      if (!moverId || !rating || !dateOfReview) {
+        showError('reviewError', 'All fields are required');
+        return;
+      }
+
+      fetch(`${API_BASE}/admin/review`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ moverId, rating, source, dateOfReviewInput: dateOfReview, feedback }),
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.success) {
+            showSuccess('reviewSuccess', 'Review logged');
+            document.getElementById('reviewMover').value = '';
+            document.getElementById('reviewRating').value = '';
+            document.getElementById('reviewDate').value = '';
+            document.getElementById('reviewFeedback').value = '';
+          } else {
+            showError('reviewError', data.error);
+          }
+        });
+    }
+
+    function updateAttendancePoints() {
+      const type = document.getElementById('attendanceType').value;
+      const pointsMap = {
+        'Late 5-9 min': 0.5,
+        'Late 10-15 min': 1,
+        'Late 16+ min': 1.5,
+        'Call out (EOB prior)': 1,
+        'Call out (day of)': 2,
+        'No Call No Show': 3,
+      };
+      document.getElementById('attendancePoints').value = pointsMap[type] || '';
+    }
+
+    function logAttendance() {
+      const moverId = document.getElementById('attendanceMover').value;
+      const type = document.getElementById('attendanceType').value;
+      const points = document.getElementById('attendancePoints').value;
+      const dateIncident = document.getElementById('attendanceDate').value;
+      const notes = document.getElementById('attendanceNotes').value;
+
+      if (!moverId || !type || !dateIncident) {
+        showError('attendanceError', 'Mover, type, and date are required');
+        return;
+      }
+
+      fetch(`${API_BASE}/admin/attendance`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ moverId, points, type, dateIncidentInput: dateIncident, notes }),
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.success) {
+            showSuccess('attendanceSuccess', 'Attendance logged');
+            document.getElementById('attendanceMover').value = '';
+            document.getElementById('attendanceType').value = '';
+            document.getElementById('attendancePoints').value = '';
+            document.getElementById('attendanceDate').value = '';
+            document.getElementById('attendanceNotes').value = '';
+          } else {
+            showError('attendanceError', data.error);
+          }
+        });
+    }
+
+    function loadChallenges() {
+      fetch(`${API_BASE}/admin/movers`, { credentials: 'include' })
+        .then(r => r.json())
+        .then(data => {
+          // In a real app, fetch challenges from backend
+          document.getElementById('challengesBody').innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px; color: #999;">No pending challenges</td></tr>';
+        });
+    }
+
+    function showSuccess(elementId, message) {
+      const el = document.getElementById(elementId);
+      el.textContent = message;
+      el.style.display = 'block';
+      setTimeout(() => { el.style.display = 'none'; }, 3000);
+    }
+
+    function showError(elementId, message) {
+      const el = document.getElementById(elementId);
+      el.textContent = message;
+      el.style.display = 'block';
+    }
+
+    // Set today's date as default
+    document.addEventListener('DOMContentLoaded', () => {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('damageDateClosed').value = today;
+      document.getElementById('reviewDate').value = today;
+      document.getElementById('attendanceDate').value = today;
+    });
+  </script>
+</body>
+</html>
